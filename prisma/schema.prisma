@@ -1,0 +1,6 @@
+model BlockedIP {
+  id        String   @id @default(cuid())
+  ip        String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

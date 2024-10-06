@@ -3,20 +3,20 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 @Entity()
 export class Photo {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column()
-    username: string;
+    username!: string;
 
     @Column()
-    imageUrl: string;
+    imageUrl!: string;
 
     @Column({ default: true })
-    active: boolean;
+    active!: boolean;
 
     @CreateDateColumn()
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn()
-    updatedAt: Date;
+    updatedAt!: Date;
 }
