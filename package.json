@@ -9,18 +9,31 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "assert": "^2.1.0",
+    "browserify-zlib": "^0.2.0",
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
+    "next": "14.2.14",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.14"
+    "reflect-metadata": "^0.2.2",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.4"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "daisyui": "^4.12.12",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.14",
+    "mysql2": "^3.11.3",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.14"
+    "typeorm": "^0.3.20",
+    "typescript": "^5"
   }
 }
