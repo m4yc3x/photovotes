@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Vote } from './Vote';
 
 @Entity()
 export class Metric {
@@ -10,4 +11,7 @@ export class Metric {
 
     @Column()
     scale!: number;
+
+    @OneToMany("Vote", (vote: Vote) => vote.metric)
+    votes!: Vote[];
 }
