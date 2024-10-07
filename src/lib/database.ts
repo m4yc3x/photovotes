@@ -1,8 +1,5 @@
 import { DataSource } from "typeorm";
-import { User } from "../models/User";
-import { Photo } from "../models/Photo";
-import { Vote } from "../models/Vote";
-import { Metric } from "../models/Metric";
+import { User, Photo, Vote, Metric } from "../models";
 
 let dataSource: DataSource;
 
@@ -16,7 +13,7 @@ export async function getDataSource(): Promise<DataSource> {
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
             entities: [User, Vote, Metric, Photo],
-            synchronize: true,
+            synchronize: false,
             logging: true,
         });
     }

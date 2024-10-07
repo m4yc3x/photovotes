@@ -1,7 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { User } from "./User.js";
-import { Metric } from "./Metric.js";
-import { Photo } from "./Photo.js";
+import { User, Metric, Photo } from "./index";
 
 @Entity("votes")
 export class Vote {
@@ -20,5 +18,3 @@ export class Vote {
     @ManyToOne(() => Photo, (photo: Photo) => photo.votes)
     photo!: Photo;
 }
-
-export default Vote;

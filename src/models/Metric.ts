@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Vote } from './Vote.js';
+import { Vote } from './index';
 
-@Entity()
+@Entity("metrics")
 export class Metric {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -15,5 +15,3 @@ export class Metric {
     @OneToMany(() => Vote, (vote: Vote) => vote.metric)
     votes!: Vote[];
 }
-
-export default Metric;
