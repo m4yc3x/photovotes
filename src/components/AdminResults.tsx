@@ -11,13 +11,15 @@ interface Photo {
 interface Metric {
     id: number;
     name: string;
-    scale: number;  // Add this line to include the scale
+    scale: number;
 }
 
 interface Vote {
-    photoId: number;
-    metricId: number;
+    id: number;
     value: number;
+    user: { id: number };
+    metric: { id: number };
+    photo: { id: number };
 }
 
 export default function AdminResults() {
@@ -37,17 +39,25 @@ export default function AdminResults() {
                     fetch('/api/metrics'),
                     fetch('/api/votes')
                 ]);
+
+                if (!photosRes.ok || !metricsRes.ok || !votesRes.ok) {
+                    throw new Error('One or more API requests failed');
+                }
+
                 const [photosData, metricsData, votesData] = await Promise.all([
                     photosRes.json(),
                     metricsRes.json(),
                     votesRes.json()
                 ]);
+
                 setPhotos(photosData);
                 setMetrics(metricsData);
-                setVotes(Array.isArray(votesData) ? votesData : []);
+                setVotes(votesData);
+
+                console.log('Fetched data:', { photos: photosData, metrics: metricsData, votes: votesData });
             } catch (error) {
                 console.error('Error fetching data:', error);
-                setError('Failed to fetch data. Please try again later.');
+                setError(error instanceof Error ? error.message : 'An unknown error occurred');
             } finally {
                 setLoading(false);
             }
@@ -57,26 +67,20 @@ export default function AdminResults() {
     }, []);
 
     const photoResults = useMemo(() => {
-        if (!Array.isArray(votes) || votes.length === 0) {
-            return photos.map(photo => ({
-                ...photo,
-                metricScores: metrics.map(metric => ({ metricId: metric.id, score: 0 })),
-                overallScore: 0
-            }));
-        }
-
         return photos.map(photo => {
-            const photoVotes = votes.filter(vote => vote.photoId === photo.id);
-            const metricScores = metrics.map(metric => {
-                const metricVotes = photoVotes.filter(vote => vote.metricId === metric.id);
-                const averageScore = metricVotes.length > 0
-                    ? metricVotes.reduce((sum, vote) => sum + vote.value, 0) / metricVotes.length
-                    : 0;
-                return { metricId: metric.id, score: averageScore };
+            const photoVotes = votes.filter(vote => vote.photo.id === photo.id);
+
+            const metricAverages = metrics.map(metric => {
+                const metricVotes = photoVotes.filter(vote => vote.metric.id === metric.id);
+                const totalValue = metricVotes.reduce((sum, vote) => sum + vote.value, 0);
+                const averageValue = metricVotes.length > 0 ? totalValue / metricVotes.length : 0;
+                return { metricId: metric.id, average: averageValue };
             });
-            const overallScore = metricScores.reduce((sum, score) => sum + score.score, 0) / metrics.length;
-            return { ...photo, metricScores, overallScore };
-        }).sort((a, b) => b.overallScore - a.overallScore);
+
+            const overallAverage = metricAverages.reduce((sum, metric) => sum + metric.average, 0) / metrics.length;
+
+            return { ...photo, metricAverages, overallAverage };
+        }).sort((a, b) => b.overallAverage - a.overallAverage);
     }, [photos, metrics, votes]);
 
     if (loading) {
@@ -121,9 +125,9 @@ export default function AdminResults() {
                                 <th>Photo</th>
                                 <th>Username</th>
                                 {metrics.map(metric => (
-                                    <th key={metric.id}>{metric.name}</th>
+                                    <th key={metric.id}>{metric.name} (0-{metric.scale})</th>
                                 ))}
-                                <th>Overall Score</th>
+                                <th>Overall Average</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -138,15 +142,15 @@ export default function AdminResults() {
                                         </div>
                                     </td>
                                     <td>{photo.username}</td>
-                                    {photo.metricScores.map(score => (
-                                        <td key={score.metricId} className="text-center">
-                                            {score.score.toFixed(2)}
+                                    {photo.metricAverages.map(metricAvg => (
+                                        <td key={metricAvg.metricId} className="text-center">
+                                            {metricAvg.average.toFixed(2)}
                                         </td>
                                     ))}
                                     <td className="font-bold">
                                         <div className="flex items-center">
                                             <Star className="text-yellow-400 mr-1" />
-                                            {photo.overallScore.toFixed(2)}
+                                            {photo.overallAverage.toFixed(2)}
                                         </div>
                                     </td>
                                 </tr>

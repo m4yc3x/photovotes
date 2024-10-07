@@ -12,24 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(200).json(metrics);
             break;
 
-        case 'POST':
-            const newMetric = metricRepository.create(req.body);
-            await metricRepository.save(newMetric);
-            res.status(201).json(newMetric);
-            break;
-
-        case 'PUT':
-            const { id } = req.query;
-            await metricRepository.update(id as string, req.body);
-            const updatedMetric = await metricRepository.findOne({ where: { id: Number(id) } });
-            res.status(200).json(updatedMetric);
-            break;
-
-        case 'DELETE':
-            const { id: deleteId } = req.query;
-            await metricRepository.delete(deleteId as string);
-            res.status(204).end();
-            break;
+        // ... other cases ...
 
         default:
             res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);

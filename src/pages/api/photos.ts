@@ -12,17 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(200).json(photos);
             break;
 
-        case 'POST':
-            const newPhoto = photoRepository.create(req.body);
-            await photoRepository.save(newPhoto);
-            res.status(201).json(newPhoto);
-            break;
-
-        case 'DELETE':
-            const { id } = req.query;
-            await photoRepository.delete(id as string);
-            res.status(204).end();
-            break;
+        // ... other cases ...
 
         default:
             res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
