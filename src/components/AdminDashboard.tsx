@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { Photo } from '../models/Photo';
-import { Search, LogOut, User, Plus, Trash2, Image } from 'lucide-react';
+import { Search, LogOut, User, Plus, Trash2, Image, Users, Activity, Telescope } from 'lucide-react';
 import Link from 'next/link';
 
 const ITEMS_PER_PAGE = 9;
@@ -94,7 +94,13 @@ export default function AdminDashboard() {
                 </div>
                 <div className="flex-none gap-4">
                     <Link href="/admin/metrics" className="btn btn-ghost">
-                        Manage Metrics
+                        <Telescope className="mr-2" /> View Results
+                    </Link>
+                    <Link href="/admin/metrics" className="btn btn-ghost">
+                        <Activity className="mr-2" /> Manage Metrics
+                    </Link>
+                    <Link href="/admin/users" className="btn btn-ghost">
+                        <Users className="mr-2" /> Manage Users
                     </Link>
                     <div className="form-control">
                         <div className="input-group flex items-center gap-4">
@@ -124,34 +130,45 @@ export default function AdminDashboard() {
             </div>
 
             <div className="container mx-auto p-4">
-                <div className="card bg-base-100 shadow-xl">
-                    <div className="card-body">
-                        <h2 className="card-title"><Plus className="mr-2" /> Add New Photo</h2>
-                        <form onSubmit={handleAddPhoto} className="flex flex-col gap-4">
-                            <div className="input-group flex items-center gap-4">
-                                <span><User /></span>
-                                <input
-                                    type="text"
-                                    value={newPhoto.username}
-                                    onChange={(e) => setNewPhoto({ ...newPhoto, username: e.target.value })}
-                                    placeholder="Username"
-                                    className="input input-bordered w-full"
-                                />
+                <div className="grid grid-cols-1 md:grid-cols-[3fr,1fr] gap-6">
+                    <div className="card bg-base-100 shadow-xl">
+                        <div className="card-body">
+                            <h2 className="card-title"><Plus className="mr-2" /> Add New Photo</h2>
+                            <form onSubmit={handleAddPhoto} className="flex flex-col gap-4">
+                                <div className="input-group flex items-center gap-4">
+                                    <span><User /></span>
+                                    <input
+                                        type="text"
+                                        value={newPhoto.username}
+                                        onChange={(e) => setNewPhoto({ ...newPhoto, username: e.target.value })}
+                                        placeholder="Username"
+                                        className="input input-bordered w-full"
+                                    />
+                                </div>
+                                <div className="input-group flex items-center gap-4">
+                                    <span><Image /></span>
+                                    <input
+                                        type="text"
+                                        value={newPhoto.imageUrl}
+                                        onChange={(e) => setNewPhoto({ ...newPhoto, imageUrl: e.target.value })}
+                                        placeholder="Image URL"
+                                        className="input input-bordered w-full"
+                                    />
+                                </div>
+                                <button type="submit" className="btn btn-primary">
+                                    <Plus className="mr-2" /> Add Photo
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div className="card bg-base-100 shadow-xl">
+                        <div className="card-body flex flex-col items-center justify-center">
+                            <div className="flex flex-col items-center justify-center">
+                                <p className="text-4xl font-bold">{photos.length}</p>
+                                <p className="text-lg text-gray-500">Total Photos</p>
                             </div>
-                            <div className="input-group flex items-center gap-4">
-                                <span><Image /></span>
-                                <input
-                                    type="text"
-                                    value={newPhoto.imageUrl}
-                                    onChange={(e) => setNewPhoto({ ...newPhoto, imageUrl: e.target.value })}
-                                    placeholder="Image URL"
-                                    className="input input-bordered w-full"
-                                />
-                            </div>
-                            <button type="submit" className="btn btn-primary">
-                                <Plus className="mr-2" /> Add Photo
-                            </button>
-                        </form>
+                        </div>
                     </div>
                 </div>
 
