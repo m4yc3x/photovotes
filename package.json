@@ -23,6 +23,7 @@
     "https-browserify": "^1.0.0",
     "lucide-react": "^0.447.0",
     "next": "14.2.14",
+    "node-fetch": "^2.7.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "react": "^18",
@@ -31,7 +32,8 @@
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "typeorm": "^0.3.20",
-    "url": "^0.11.4"
+    "url": "^0.11.4",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.16.10",
@@ -44,6 +46,8 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "node-fetch": "^2.7.0",
+    "uuid": "^10.0.0"
   }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { Photo } from '../models/Photo';
-import { Search, LogOut, User, Plus, Trash2, Image, Users, Activity, Telescope } from 'lucide-react';
+import { Search, LogOut, User, Plus, Trash2, Image, Users, Activity, Telescope, Save, Loader } from 'lucide-react';
 import Link from 'next/link';
 
 const ITEMS_PER_PAGE = 9;
@@ -13,6 +13,7 @@ export default function AdminDashboard() {
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [migrating, setMigrating] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -77,6 +78,35 @@ export default function AdminDashboard() {
         } catch (error) {
             console.error('Error deleting photo:', error);
             setError('Failed to delete photo. Please try again.');
+        }
+    };
+
+    const handleMigratePhotos = async () => {
+        setMigrating(true);
+        setError(null);
+        try {
+            console.log('Starting photo migration...');
+            const response = await fetch('/api/photos?action=migrate', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log('Migration response status:', response.status);
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Migration error response:', errorText);
+                throw new Error(`Failed to migrate photos: ${response.statusText}`);
+            }
+            const data = await response.json();
+            console.log('Migration response data:', data);
+            await fetchPhotos(); // Refresh the photo list after migration
+            console.log('Photo migration completed successfully');
+        } catch (error) {
+            console.error('Error migrating photos:', error);
+            setError(`Failed to migrate photos: ${(error as Error).message}`);
+        } finally {
+            setMigrating(false);
         }
     };
 
@@ -208,6 +238,14 @@ export default function AdminDashboard() {
                                 <p className="text-4xl font-bold">{photos.length}</p>
                                 <p className="text-lg text-gray-500">Total Photos</p>
                             </div>
+                            <button 
+                                className={`btn btn-primary mt-4 ${migrating ? 'loading' : ''}`}
+                                onClick={handleMigratePhotos}
+                                disabled={migrating}
+                            >
+                                {migrating ? <Loader className="animate-spin mr-2" /> : <Save className="mr-2" />}
+                                Migrate Photos
+                            </button>
                         </div>
                     </div>
                 </div>

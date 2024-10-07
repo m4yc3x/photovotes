@@ -2,7 +2,7 @@
 const nextConfig = {
     reactStrictMode: true,
     images: {
-        domains: ['cdn.discordapp.com'],
+        domains: ['localhost', 'votes.ori.wtf', 'ori.wtf'],
     },
     webpack: (config, { isServer }) => {
         if (!isServer) {
