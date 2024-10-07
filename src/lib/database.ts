@@ -14,7 +14,7 @@ export async function getDataSource(): Promise<DataSource> {
             database: process.env.DB_NAME,
             entities: [User, Vote, Metric, Photo],
             synchronize: false,
-            logging: true,
+            logging: false,
         });
     }
 
