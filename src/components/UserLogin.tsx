@@ -1,21 +1,22 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { Lock, LogIn, AlertTriangle, User } from 'lucide-react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Key, LogIn, AlertTriangle } from 'lucide-react';
 
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutes in milliseconds
 
-export default function AdminLogin() {
-    const [password, setPassword] = useState('');
+export default function UserLogin() {
+    const [key, setKey] = useState('');
     const [error, setError] = useState('');
     const [attempts, setAttempts] = useState(0);
     const [lockoutTime, setLockoutTime] = useState(0);
     const router = useRouter();
 
     useEffect(() => {
-        const storedAttempts = parseInt(localStorage.getItem('loginAttempts') || '0');
-        const storedLockoutTime = parseInt(localStorage.getItem('lockoutTime') || '0');
+        const storedAttempts = parseInt(localStorage.getItem('userLoginAttempts') || '0');
+        const storedLockoutTime = parseInt(localStorage.getItem('userLockoutTime') || '0');
         setAttempts(storedAttempts);
         setLockoutTime(storedLockoutTime);
     }, []);
@@ -27,8 +28,8 @@ export default function AdminLogin() {
                     clearInterval(timer);
                     setLockoutTime(0);
                     setAttempts(0);
-                    localStorage.setItem('loginAttempts', '0');
-                    localStorage.setItem('lockoutTime', '0');
+                    localStorage.setItem('userLoginAttempts', '0');
+                    localStorage.setItem('userLockoutTime', '0');
                 }
             }, 1000);
             return () => clearInterval(timer);
@@ -43,28 +44,36 @@ export default function AdminLogin() {
         }
 
         try {
-            const response = await fetch('/api/admin-login', {
+            const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password }),
+                body: JSON.stringify({ key }),
             });
 
             if (response.ok) {
-                localStorage.setItem('adminAuthenticated', 'true');
-                localStorage.setItem('loginAttempts', '0');
-                localStorage.setItem('lockoutTime', '0');
-                router.push('/admin/dashboard');
+                const user = await response.json();
+                localStorage.setItem('userAuthenticated', 'true');
+                localStorage.setItem('userRole', user.role);
+                localStorage.setItem('userLoginAttempts', '0');
+                localStorage.setItem('userLockoutTime', '0');
+                
+                if (user.role === 'admin') {
+                    localStorage.setItem('adminAuthenticated', 'true');
+                    router.push('/admin/dashboard');
+                } else {
+                    router.push('/judge/dashboard');
+                }
             } else {
                 const newAttempts = attempts + 1;
                 setAttempts(newAttempts);
-                localStorage.setItem('loginAttempts', newAttempts.toString());
+                localStorage.setItem('userLoginAttempts', newAttempts.toString());
                 if (newAttempts >= MAX_ATTEMPTS) {
                     const newLockoutTime = Date.now() + LOCKOUT_TIME;
                     setLockoutTime(newLockoutTime);
-                    localStorage.setItem('lockoutTime', newLockoutTime.toString());
+                    localStorage.setItem('userLockoutTime', newLockoutTime.toString());
                     setError(`Too many attempts. Please try again in ${LOCKOUT_TIME / 1000} seconds.`);
                 } else {
-                    setError(`Incorrect password. ${MAX_ATTEMPTS - newAttempts} attempts remaining.`);
+                    setError(`Invalid key. ${MAX_ATTEMPTS - newAttempts} attempts remaining.`);
                 }
             }
         } catch (error) {
@@ -78,20 +87,20 @@ export default function AdminLogin() {
             <div className="card w-96 bg-base-100 shadow-xl">
                 <div className="card-body">
                     <h2 className="card-title text-2xl font-bold mb-4 flex items-center">
-                        <Lock className="mr-2" /> Admin Login
+                        <Key className="mr-2" /> User Login
                     </h2>
                     <form onSubmit={handleSubmit}>
                         <div className="form-control">
                             <div className="relative">
                                 <input
                                     type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Enter password"
+                                    value={key}
+                                    onChange={(e) => setKey(e.target.value)}
+                                    placeholder="Enter your key"
                                     className="input input-bordered w-full pr-10"
                                     disabled={lockoutTime > Date.now()}
                                 />
-                                <Lock className="absolute top-1/2 transform -translate-y-1/2 right-3 text-gray-400" size={20} />
+                                <Key className="absolute top-1/2 transform -translate-y-1/2 right-3 text-gray-400" size={20} />
                             </div>
                         </div>
                         <div className="form-control mt-6">
@@ -105,10 +114,6 @@ export default function AdminLogin() {
                             <AlertTriangle className="mr-2" size={16} /> {error}
                         </p>
                     )}
-                    <div className="divider">OR</div>
-                    <Link href="/" className="btn btn-outline btn-block">
-                        <User className="mr-2" size={20} /> User Login
-                    </Link>
                 </div>
             </div>
         </div>

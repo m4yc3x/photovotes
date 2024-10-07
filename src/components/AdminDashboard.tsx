@@ -14,6 +14,15 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
+    useEffect(() => {
+        const adminAuthenticated = localStorage.getItem('adminAuthenticated') === 'true';
+        const userRole = localStorage.getItem('userRole');
+        
+        if (!adminAuthenticated && userRole !== 'admin') {
+            router.push('/admin');
+        }
+    }, [router]);
+
     const fetchPhotos = useCallback(async () => {
         setLoading(true);
         try {
