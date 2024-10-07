@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     switch (req.method) {
         case 'GET':
             try {
-                const photos = await photoRepository.find();
+                const photos = await photoRepository.find({ order: { id: 'DESC' } });
                 res.status(200).json(photos);
             } catch (error) {
                 console.error('Error fetching photos:', error);
