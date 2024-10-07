@@ -34,7 +34,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-00_AI_LEAD_DEVELOPER.md
+00_AI_LEAD_DEVELOPER_GUIDE.md
 .env
 .env.local
 migration.config.ts
