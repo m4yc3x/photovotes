@@ -162,7 +162,7 @@ export default function JudgeDashboard() {
                                 </div>
                             ) : (
                                 <Image
-                                    src={currentPhoto.imageUrl}
+                                    src={currentPhoto.imageUrl.startsWith('http') ? currentPhoto.imageUrl : `/${currentPhoto.imageUrl.replace(/^\//, '')}`}
                                     alt={`Photo by ${currentPhoto.username}`}
                                     layout="fill"
                                     objectFit="contain"

@@ -30,10 +30,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return 'photo.id NOT IN ' + subQuery;
             })
             .andWhere('photo.active = :active', { active: true })
-            .orderBy('photo.id', 'DESC')
+            .orderBy('RAND()')  // Randomize the order of photos
             .getOne();
 
         if (nextPhoto) {
+            // Ensure the imageUrl is correctly formatted
+            nextPhoto.imageUrl = nextPhoto.imageUrl.startsWith('http') 
+                ? nextPhoto.imageUrl 
+                : `${process.env.NEXT_PUBLIC_BASE_URL || ''}${nextPhoto.imageUrl}`;
+            
             res.status(200).json(nextPhoto);
         } else {
             res.status(404).json({ message: 'No more photos to judge' });

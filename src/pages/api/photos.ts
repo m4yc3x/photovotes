@@ -129,9 +129,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     return res.status(404).json({ message: 'Photo not found' });
                 }
 
-                // Delete the file from the filesystem
-                const filePath = path.join(process.cwd(), 'public', photo.imageUrl);
-                await fs.unlink(filePath);
+                try {
+                    // Delete the file from the filesystem
+                    const filePath = path.join(process.cwd(), 'public', photo.imageUrl);
+                    await fs.unlink(filePath);
+                    console.log(`Deleted file from: ${filePath}`);
+                } catch (error) {
+                    console.error(`Error deleting file: ${error} - continuing`);
+                }
 
                 // Delete the photo from the database
                 const result = await photoRepository.delete(id);

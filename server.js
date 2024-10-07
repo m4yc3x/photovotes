@@ -17,6 +17,7 @@ app.prepare().then(() => {
     const parsedUrl = parse(req.url, true);
     const { pathname } = parsedUrl;
 
+    // Only handle /uploads/ path, let Next.js handle the rest
     if (pathname.startsWith('/uploads/')) {
       const filePath = path.join(__dirname, 'public', pathname);
       try {
@@ -30,6 +31,7 @@ app.prepare().then(() => {
         res.setHeader('Content-Type', contentType);
         res.end(data);
       } catch (err) {
+        console.error(`Error serving static file: ${filePath}`, err);
         res.statusCode = 404;
         res.end('File not found');
       }
