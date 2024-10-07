@@ -215,14 +215,29 @@ export default function JudgeDashboard() {
             </main>
 
             {expandedImage && currentPhoto && (
-                <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50" onClick={() => setExpandedImage(false)}>
-                    <div className="relative w-full h-full max-w-4xl max-h-4xl">
+                <div 
+                    className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 cursor-pointer" 
+                    onClick={() => setExpandedImage(false)}
+                >
+                    <div className="relative w-full h-full p-4">
                         <Image
                             src={currentPhoto.imageUrl}
                             alt={`Photo by ${currentPhoto.username}`}
                             layout="fill"
                             objectFit="contain"
+                            quality={100}
                         />
+                        <button 
+                            className="absolute top-4 right-4 btn btn-circle btn-sm"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setExpandedImage(false);
+                            }}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             )}
