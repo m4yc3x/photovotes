@@ -111,13 +111,14 @@ export default function ModifyVotes() {
             });
 
             if (response.ok) {
-                // Optionally, you can show a success message here
                 console.log('Votes updated successfully');
+                // Optionally, you can show a success message to the user here
             } else {
-                console.error('Failed to update votes');
+                throw new Error('Failed to update votes');
             }
         } catch (error) {
             console.error('Error updating votes:', error);
+            // Optionally, you can show an error message to the user here
         } finally {
             setSaving(null);
         }
