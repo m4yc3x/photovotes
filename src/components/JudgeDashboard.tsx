@@ -48,7 +48,7 @@ export default function JudgeDashboard() {
             if (response.ok) {
                 const fetchedMetrics = await response.json();
                 setMetrics(fetchedMetrics);
-                setVotes(Object.fromEntries(fetchedMetrics.map(m => [m.id, 0])));
+                setVotes(Object.fromEntries(fetchedMetrics.map((m: Metric) => [m.id, 0])));
             }
         } catch (error) {
             console.error('Error fetching metrics:', error);
@@ -125,6 +125,8 @@ export default function JudgeDashboard() {
                     </Link>
                 </div>
                 <div className="flex-none gap-2">
+                    <Link href="/judge/dashboard" className="btn btn-ghost">Dashboard</Link>
+                    <Link href="/judge/modify-votes" className="btn btn-ghost">Modify Votes</Link>
                     <div className="dropdown dropdown-end">
                         <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                             <div className="w-10 rounded-full">
@@ -133,18 +135,18 @@ export default function JudgeDashboard() {
                         </label>
                         <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
                             <li>
-                                <a className="justify-between">
+                                <a className="justify-between py-2">
                                     {username || 'Judge'}
                                     <span className="badge">Judge</span>
                                 </a>
                             </li>
-                            <li><a onClick={handleLogout}><LogOut className="mr-2" /> Logout</a></li>
+                            <li><a className="py-2" onClick={handleLogout}><LogOut className="mr-2" /> Logout</a></li>
                         </ul>
                     </div>
                 </div>
             </header>
 
-            <main className="container mx-auto p-4">
+            <main className="container mx-auto p-4 py-8">
                 <h1 className="text-3xl font-bold mb-6">Welcome, {username}!</h1>
                 
                 {loading ? (
@@ -216,7 +218,7 @@ export default function JudgeDashboard() {
                 ) : (
                     <div className="text-center py-8">
                         <h2 className="text-2xl font-semibold mb-4">No more photos to judge!</h2>
-                        <p>Great job! You've reviewed all available photos.</p>
+                        <p>Great job! You&apos;ve reviewed all available photos.</p>
                     </div>
                 )}
             </main>

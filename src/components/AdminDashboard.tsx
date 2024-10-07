@@ -132,7 +132,7 @@ export default function AdminDashboard() {
                             </div>
                         </label>
                         <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-                            <li><a onClick={handleLogout}><LogOut className="mr-2" /> Logout</a></li>
+                            <li><a className="py-2" onClick={handleLogout}><LogOut className="mr-2" /> Logout</a></li>
                         </ul>
                     </div>
                 </div>

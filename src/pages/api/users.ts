@@ -20,14 +20,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         case 'PUT':
             const { id } = req.query;
-            await userRepository.update(id, req.body);
+            await userRepository.update(id as string, req.body);
             const updatedUser = await userRepository.findOne({ where: { id: Number(id) } });
             res.status(200).json(updatedUser);
             break;
 
         case 'DELETE':
             const { id: deleteId } = req.query;
-            await userRepository.delete(deleteId);
+            await userRepository.delete(deleteId as string);
             res.status(204).end();
             break;
 

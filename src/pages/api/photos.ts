@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         case 'DELETE':
             const { id } = req.query;
-            await photoRepository.delete(id);
+            await photoRepository.delete(id as string);
             res.status(204).end();
             break;
 
