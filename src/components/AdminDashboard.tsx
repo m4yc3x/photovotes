@@ -186,24 +186,24 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {loading
                         ? Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
-                              <PhotoSkeleton key={index} />
-                          ))
+                            <PhotoSkeleton key={index} />
+                        ))
                         : paginatedPhotos.map((photo) => (
-                              <div key={photo.id} className="card bg-base-100 shadow-xl">
-                                  <figure><img src={photo.imageUrl} alt={photo.username} className="w-full h-48 object-cover" /></figure>
-                                  <div className="card-body">
-                                      <h2 className="card-title line-clamp-1 text-ellipsis">{photo.username}</h2>
-                                      <div className="card-actions justify-end">
-                                          <button
-                                              onClick={() => handleDeletePhoto(photo.id)}
-                                              className="btn btn-error btn-sm"
-                                          >
-                                              <Trash2 className="mr-2" /> Delete
-                                          </button>
-                                      </div>
-                                  </div>
-                              </div>
-                          ))}
+                            <div key={photo.id} className="card bg-base-100 shadow-xl">
+                                <figure><img src={photo.imageUrl} alt={photo.username} className="w-full h-48 object-cover" /></figure>
+                                <div className="card-body">
+                                    <h2 className="card-title line-clamp-1 text-ellipsis">{photo.username}</h2>
+                                    <div className="card-actions justify-end">
+                                        <button
+                                            onClick={() => handleDeletePhoto(photo.id)}
+                                            className="btn btn-error btn-sm"
+                                        >
+                                            <Trash2 className="mr-2" /> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                 </div>
 
                 {pageCount > 1 && (

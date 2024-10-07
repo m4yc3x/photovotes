@@ -54,6 +54,8 @@ export default function UserLogin() {
                 const user = await response.json();
                 localStorage.setItem('userAuthenticated', 'true');
                 localStorage.setItem('userRole', user.role);
+                localStorage.setItem('userId', user.id);
+                localStorage.setItem('username', user.name);
                 localStorage.setItem('userLoginAttempts', '0');
                 localStorage.setItem('userLockoutTime', '0');
                 

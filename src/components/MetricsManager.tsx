@@ -115,68 +115,68 @@ export default function MetricsManager() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {loading
                         ? Array.from({ length: 6 }).map((_, index) => (
-                              <MetricSkeleton key={index} />
-                          ))
+                            <MetricSkeleton key={index} />
+                        ))
                         : metrics.map((metric) => (
-                              <div key={metric.id} className="card bg-base-100 shadow-xl">
-                                  <div className="card-body">
-                                      {editingMetric?.id === metric.id ? (
-                                          <>
-                                              <input
-                                                  type="text"
-                                                  value={editingMetric.name}
-                                                  onChange={(e) => setEditingMetric({ ...editingMetric, name: e.target.value })}
-                                                  className="input input-bordered w-full mb-2"
-                                              />
-                                              <div className="flex items-center gap-4 mb-4">
-                                                  <input
-                                                      type="range"
-                                                      min="1"
-                                                      max="10"
-                                                      value={editingMetric.scale}
-                                                      onChange={(e) => setEditingMetric({ ...editingMetric, scale: parseInt(e.target.value) })}
-                                                      className="range range-primary flex-grow"
-                                                  />
-                                                  <span className="w-12 text-center">{editingMetric.scale}</span>
-                                              </div>
-                                              <div className="card-actions justify-end">
-                                                  <button
-                                                      onClick={() => handleUpdateMetric(metric.id, editingMetric)}
-                                                      className="btn btn-success btn-sm w-full"
-                                                  >
-                                                      <Save className="mr-2" /> Save
-                                                  </button>
-                                                  <button
-                                                      onClick={() => setEditingMetric(null)}
-                                                      className="btn btn-ghost btn-sm w-full"
-                                                  >
-                                                      <X className="mr-2" /> Cancel
-                                                  </button>
-                                              </div>
-                                          </>
-                                      ) : (
-                                          <>
-                                              <h2 className="card-title">{metric.name}</h2>
-                                              <p>Scale: 0-{metric.scale}</p>
-                                              <div className="card-actions justify-end">
-                                                  <button
-                                                      onClick={() => setEditingMetric(metric)}
-                                                      className="btn btn-primary btn-sm w-full"
-                                                  >
-                                                      <Edit2 className="mr-2" /> Edit
-                                                  </button>
-                                                  <button
-                                                      onClick={() => handleDeleteMetric(metric.id)}
-                                                      className="btn btn-error btn-sm w-full"
-                                                  >
-                                                      <Trash2 className="mr-2" /> Delete
-                                                  </button>
-                                              </div>
-                                          </>
-                                      )}
-                                  </div>
-                              </div>
-                          ))}
+                            <div key={metric.id} className="card bg-base-100 shadow-xl">
+                                <div className="card-body">
+                                    {editingMetric?.id === metric.id ? (
+                                        <>
+                                            <input
+                                                type="text"
+                                                value={editingMetric.name}
+                                                onChange={(e) => setEditingMetric({ ...editingMetric, name: e.target.value })}
+                                                className="input input-bordered w-full mb-2"
+                                            />
+                                            <div className="flex items-center gap-4 mb-4">
+                                                <input
+                                                    type="range"
+                                                    min="1"
+                                                    max="10"
+                                                    value={editingMetric.scale}
+                                                    onChange={(e) => setEditingMetric({ ...editingMetric, scale: parseInt(e.target.value) })}
+                                                    className="range range-primary flex-grow"
+                                                />
+                                                <span className="w-12 text-center">{editingMetric.scale}</span>
+                                            </div>
+                                            <div className="card-actions justify-end">
+                                                <button
+                                                    onClick={() => handleUpdateMetric(metric.id, editingMetric)}
+                                                    className="btn btn-success btn-sm w-full"
+                                                >
+                                                    <Save className="mr-2" /> Save
+                                                </button>
+                                                <button
+                                                    onClick={() => setEditingMetric(null)}
+                                                    className="btn btn-ghost btn-sm w-full"
+                                                >
+                                                    <X className="mr-2" /> Cancel
+                                                </button>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <h2 className="card-title">{metric.name}</h2>
+                                            <p>Scale: 0-{metric.scale}</p>
+                                            <div className="card-actions justify-end">
+                                                <button
+                                                    onClick={() => setEditingMetric(metric)}
+                                                    className="btn btn-primary btn-sm w-full"
+                                                >
+                                                    <Edit2 className="mr-2" /> Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteMetric(metric.id)}
+                                                    className="btn btn-error btn-sm w-full"
+                                                >
+                                                    <Trash2 className="mr-2" /> Delete
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
                 </div>
             </div>
         </div>
