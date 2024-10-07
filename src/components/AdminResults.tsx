@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, Image, Star } from 'lucide-react';
+import { ArrowLeft, Image, Star, BadgeCheck } from 'lucide-react';
 import Link from 'next/link';
 
 interface Photo {
@@ -77,10 +77,11 @@ export default function AdminResults() {
                 return { metricId: metric.id, average: averageValue };
             });
 
-            const overallAverage = metricAverages.reduce((sum, metric) => sum + metric.average, 0) / metrics.length;
+            const totalScore = metricAverages.reduce((sum, metric) => sum + metric.average, 0);
+            const overallAverage = totalScore / metrics.length;
 
-            return { ...photo, metricAverages, overallAverage };
-        }).sort((a, b) => b.overallAverage - a.overallAverage);
+            return { ...photo, metricAverages, totalScore, overallAverage };
+        }).sort((a, b) => b.totalScore - a.totalScore);
     }, [photos, metrics, votes]);
 
     if (loading) {
@@ -127,6 +128,7 @@ export default function AdminResults() {
                                 {metrics.map(metric => (
                                     <th key={metric.id}>{metric.name} (0-{metric.scale})</th>
                                 ))}
+                                <th>Total Score</th>
                                 <th>Overall Average</th>
                             </tr>
                         </thead>
@@ -147,8 +149,14 @@ export default function AdminResults() {
                                             {metricAvg.average.toFixed(2)}
                                         </td>
                                     ))}
+                                    <td className="font-bold text-center">
+                                        <div className="flex items-center justify-center">
+                                            <BadgeCheck className="text-green-400 mr-1" />
+                                            {photo.totalScore.toFixed(2)}
+                                        </div>
+                                    </td>
                                     <td className="font-bold">
-                                        <div className="flex items-center">
+                                        <div className="flex items-center justify-center">
                                             <Star className="text-yellow-400 mr-1" />
                                             {photo.overallAverage.toFixed(2)}
                                         </div>
