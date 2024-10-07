@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { Vote } from "./Vote";
+import { Vote } from "./Vote.js";
 
 @Entity()
 export class Photo {
@@ -21,6 +21,8 @@ export class Photo {
     @UpdateDateColumn()
     updatedAt!: Date;
 
-    @OneToMany("Vote", (vote: Vote) => vote.photo)
+    @OneToMany(() => Vote, (vote: Vote) => vote.photo)
     votes!: Vote[];
 }
+
+export default Photo;

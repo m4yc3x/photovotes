@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { Vote } from "./Vote";
+import { Vote } from "./Vote.js";
 
 @Entity("users")
 export class User {
@@ -15,6 +15,8 @@ export class User {
     @Column()
     role!: string;
 
-    @OneToMany("Vote", (vote: Vote) => vote.user)
+    @OneToMany(() => Vote, (vote: Vote) => vote.user)
     votes!: Vote[];
 }
+
+export default User;

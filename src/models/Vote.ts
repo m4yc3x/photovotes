@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { User } from "./User";
-import { Metric } from "./Metric";
-import { Photo } from "./Photo";
+import { User } from "./User.js";
+import { Metric } from "./Metric.js";
+import { Photo } from "./Photo.js";
 
 @Entity("votes")
 export class Vote {
@@ -11,12 +11,14 @@ export class Vote {
     @Column("float")
     value!: number;
 
-    @ManyToOne("User", (user: User) => user.votes)
+    @ManyToOne(() => User, (user: User) => user.votes)
     user!: User;
 
-    @ManyToOne("Metric", (metric: Metric) => metric.votes)
+    @ManyToOne(() => Metric, (metric: Metric) => metric.votes)
     metric!: Metric;
 
-    @ManyToOne("Photo", (photo: Photo) => photo.votes)
+    @ManyToOne(() => Photo, (photo: Photo) => photo.votes)
     photo!: Photo;
 }
+
+export default Vote;
