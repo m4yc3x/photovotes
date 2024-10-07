@@ -102,7 +102,7 @@ export default function AdminDashboard() {
                     </a>
                 </div>
                 <div className="flex-none gap-4">
-                    <Link href="/admin/metrics" className="btn btn-ghost">
+                    <Link href="/admin/results" className="btn btn-ghost">
                         <Telescope className="mr-2" /> View Results
                     </Link>
                     <Link href="/admin/metrics" className="btn btn-ghost">
