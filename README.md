@@ -1,4 +1,3 @@
-```markdown:README.md
 # PhotoVotes: A Next.js Photo Voting Application
 
 ## Table of Contents
@@ -427,4 +426,3 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Your Name – [stellarweb@tuta.io](mailto:stellarweb@tuta.io)
 
 Project Link: [https://github.com/m4yc3x/photovotes](https://github.com/m4yc3x/photovotes)
-```
