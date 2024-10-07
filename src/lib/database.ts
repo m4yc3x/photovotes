@@ -1,8 +1,8 @@
 import { DataSource } from "typeorm";
 import { User } from "../models/User";
+import { Photo } from "../models/Photo";
 import { Vote } from "../models/Vote";
 import { Metric } from "../models/Metric";
-import { Photo } from "../models/Photo";
 
 let dataSource: DataSource;
 
