@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, Image, Star, BadgeCheck } from 'lucide-react';
+import { ArrowLeft, Star, BadgeCheck } from 'lucide-react';
 import Link from 'next/link';
 
 interface Photo {
