@@ -57,13 +57,16 @@ export default function AdminDashboard() {
                 body: JSON.stringify(newPhoto),
             });
             if (!response.ok) {
-                throw new Error('Failed to add photo');
+                const errorData = await response.json();
+                throw new Error(`Failed to add photo: ${errorData.message || response.statusText}`);
             }
+            const addedPhoto = await response.json();
+            console.log('Added photo:', addedPhoto);
             setNewPhoto({ username: '', imageUrl: '' });
             fetchPhotos();
         } catch (error) {
             console.error('Error adding photo:', error);
-            setError('Failed to add photo. Please try again.');
+            setError(`Failed to add photo: ${(error as Error).message}`);
         }
     };
 

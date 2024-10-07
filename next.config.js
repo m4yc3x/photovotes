@@ -16,7 +16,8 @@ const nextConfig = {
     },
     experimental: {
         esmExternals: true
-    }
+    },
+    // Remove the output: 'standalone' option
 };
 
 export default nextConfig;

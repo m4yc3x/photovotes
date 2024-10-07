@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "node server.js",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server.js",
     "lint": "next lint",
     "typeorm": "typeorm-ts-node-esm",
     "migration:generate": "npm run typeorm -- migration:generate -d src/migration.config.ts src/migrations/InitialMigration",

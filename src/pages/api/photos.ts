@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import fs from 'fs/promises';
 
+const UPLOADS_DIR = path.join(process.cwd(), 'public', 'uploads');
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const dataSource = await getDataSource();
     const photoRepository = dataSource.getRepository(Photo);
@@ -78,39 +80,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 try {
                     const { username, imageUrl } = req.body;
 
-                    // Fetch the image from the provided URL
+                    console.log(`Creating new photo for ${username} with URL: ${imageUrl}`);
+
                     const response = await fetch(imageUrl);
                     if (!response.ok) {
-                        throw new Error('Failed to fetch image');
+                        throw new Error(`Failed to fetch image: ${response.statusText}`);
                     }
 
-                    // Generate a unique filename
-                    const fileExtension = path.extname(new URL(imageUrl).pathname);
+                    const fileExtension = path.extname(new URL(imageUrl).pathname) || '.jpg';
                     const fileName = `${uuidv4()}${fileExtension}`;
+                    const filePath = path.join(UPLOADS_DIR, fileName);
 
-                    // Define the path where the image will be saved
-                    const publicDir = path.join(process.cwd(), 'public');
-                    const uploadsDir = path.join(publicDir, 'uploads');
-                    const filePath = path.join(uploadsDir, fileName);
+                    console.log(`Attempting to save image to: ${filePath}`);
 
-                    // Ensure the uploads directory exists
-                    await fs.mkdir(uploadsDir, { recursive: true });
+                    await fs.mkdir(UPLOADS_DIR, { recursive: true });
 
-                    // Save the image to the filesystem
                     const arrayBuffer = await response.arrayBuffer();
                     await fs.writeFile(filePath, Buffer.from(arrayBuffer));
 
-                    // Create the new photo entry with the local file path
+                    console.log(`Image saved successfully to: ${filePath}`);
+
                     const newPhoto = photoRepository.create({
                         username,
-                        imageUrl: `/uploads/${fileName}` // This is the path that will be used in <img src>
+                        imageUrl: `/uploads/${fileName}`
                     });
 
                     const savedPhoto = await photoRepository.save(newPhoto);
+                    console.log(`Saved photo to database with ID: ${savedPhoto.id}`);
+
                     res.status(201).json(savedPhoto);
                 } catch (error) {
                     console.error('Error creating photo:', error);
-                    res.status(500).json({ message: 'Error creating photo' });
+                    res.status(500).json({ message: 'Error creating photo', error: (error as Error).message });
                 }
             }
             break;
