@@ -57,7 +57,7 @@ Before you begin, ensure you have the following installed:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/photovotes.git
+   git clone https://github.com/m4yc3x/photovotes.git
    cd photovotes
    ```
 
@@ -135,7 +135,7 @@ npm -v
 
 Navigate to the directory where you want to host the application and clone the repository:
 ```bash
-git clone https://github.com/your-username/photovotes.git
+git clone https://github.com/m4yc3x/photovotes.git
 cd photovotes
 ```
 
@@ -358,7 +358,7 @@ Contributions are what make the open-source community such an amazing place to l
 
 2. **Clone the Repository**  
    ```bash
-   git clone https://github.com/your-username/photovotes.git
+   git clone https://github.com/m4yc3x/photovotes.git
    cd photovotes
    ```
 
