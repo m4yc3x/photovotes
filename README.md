@@ -1,3 +1,4 @@
+```markdown:README.md
 # PhotoVotes: A Next.js Photo Voting Application
 
 ## Table of Contents
@@ -17,6 +18,7 @@
 11. [Contributing](#contributing)
 12. [Troubleshooting](#troubleshooting)
 13. [License](#license)
+14. [Contact](#contact)
 
 ## Introduction
 
@@ -45,6 +47,7 @@ PhotoVotes is a sophisticated Next.js application designed for photo contests an
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
+
 - Node.js (v14 or later)
 - npm (v6 or later)
 - MariaDB (v10 or later)
@@ -54,18 +57,22 @@ Before you begin, ensure you have the following installed:
 ### Environment Setup
 
 1. Clone the repository:
-   ```
+   ```bash
    git clone https://github.com/your-username/photovotes.git
    cd photovotes
    ```
 
 2. Create a `.env.local` file in the root directory with the following variables:
    ```
-   DATABASE_URL=mysql://username:password@localhost:3306/photovotes
-   JWT_SECRET=your_jwt_secret_here
-   NEXT_PUBLIC_API_URL=http://localhost:3000/api
+    DB_HOST=localhost
+    DB_PORT=3306
+    DB_USERNAME=root
+    DB_PASSWORD=password
+    DB_NAME=my_db_name
+
+    ADMIN_PASSWORD=password
    ```
-   Replace `username`, `password`, and `your_jwt_secret_here` with your actual database credentials and a secure random string for JWT.
+   Replace with your actual database credentials and a secure random string for the admin password.
 
 ### Database Configuration
 
@@ -79,19 +86,19 @@ Before you begin, ensure you have the following installed:
 ### Installation
 
 1. Install the dependencies:
-   ```
+   ```bash
    npm install
    ```
 
 2. Run the database migrations:
-   ```
+   ```bash
    npm run typeorm migration:run
    ```
 
 ## Running the Application
 
 1. Start the development server:
-   ```
+   ```bash
    npm run dev
    ```
 
@@ -116,7 +123,6 @@ sudo apt install -y build-essential nginx git
 
 #### c. Install Node.js and npm
 It's recommended to use Node Version Manager (NVM) for installing Node.js.
-
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 source ~/.bashrc
@@ -129,7 +135,6 @@ npm -v
 ### 2. Clone the Repository
 
 Navigate to the directory where you want to host the application and clone the repository:
-
 ```bash
 git clone https://github.com/your-username/photovotes.git
 cd photovotes
@@ -138,17 +143,15 @@ cd photovotes
 ### 3. Environment Variables
 
 Create a `.env.production` file with the necessary environment variables:
-
 ```bash
 cp .env.local .env.production
 ```
 
-Edit the `.env.production` file to reflect production settings, such as production database URLs, JWT secrets, and API URLs.
+Edit the `.env.production` file to reflect production settings, such as production database URLs, passwords, and API URLs.
 
 ### 4. Install Dependencies and Build
 
 Install the dependencies and build the application:
-
 ```bash
 npm install
 npm run build
@@ -159,7 +162,6 @@ npm run build
 Ensure that your production MariaDB server is set up and accessible. Update the `DATABASE_URL` in your `.env.production` file accordingly.
 
 Run the migrations:
-
 ```bash
 npm run typeorm migration:run
 ```
@@ -197,7 +199,6 @@ sudo nano /etc/nginx/sites-available/photovotes
 ```
 
 Add the following configuration to the file:
-
 ```nginx
 server {
     listen 80;
@@ -218,7 +219,6 @@ server {
     }
 }
 ```
-
 Replace `your_domain.com` with your actual domain and `/path-to-your-app/` with the path to your PhotoVotes application.
 
 #### c. Enable the Configuration and Test Nginx
@@ -243,7 +243,6 @@ sudo apt install certbot python3-certbot-nginx -y
 ```bash
 sudo certbot --nginx -d your_domain.com -d www.your_domain.com
 ```
-
 Follow the prompts to complete the SSL setup.
 
 ### 9. Verify the Deployment
@@ -263,3 +262,169 @@ Navigate to `https://your_domain.com` in your browser to ensure that the applica
   npm run build
   pm2 restart photovotes
   ```
+
+## Project Structure
+
+Provide an overview of the project's file structure and the purpose of each main directory and file.
+
+```
+photovotes/
+│
+├── src/
+│   ├── app/
+│   ├── components/
+│   ├── pages/
+│   ├── models/
+│   └── lib/
+│
+├── .env.local
+├── .gitignore
+├── package.json
+├── tsconfig.json
+├── next.config.js
+├── tailwind.config.ts
+├── postcss.config.mjs
+└── README.md
+```
+
+- **src/components/**: Contains reusable React components used throughout the application.
+- **src/pages/**: Contains all Next.js pages, including API routes.
+- **src/models/**: Contains TypeORM models representing database entities.
+- **src/lib/**: Contains database connection logic.
+- **.env.local**: Local environment variables.
+- **.gitignore**: Specifies files and directories to be ignored by Git.
+- **package.json**: Lists project dependencies and scripts.
+- **tsconfig.json**: TypeScript configuration.
+- **next.config.js**: Next.js configuration.
+- **tailwind.config.ts**: Tailwind CSS configuration.
+- **postcss.config.mjs**: PostCSS configuration.
+- **README.md**: Project documentation (this file).
+
+## API Endpoints
+
+Outline the available API endpoints, their methods, and their purpose.
+
+### Photos
+
+- **GET /api/photos**: Retrieve all photos.
+- **POST /api/photos**: Add a new photo.
+- **PUT /api/photos**: Update an existing photo.
+- **DELETE /api/photos**: Delete a photo.
+
+### Votes
+
+- **GET /api/votes**: Retrieve all votes.
+- **POST /api/votes**: Submit new votes.
+- **PUT /api/votes**: Update existing votes.
+
+### Metrics
+
+- **GET /api/metrics**: Retrieve all metrics.
+- **POST /api/metrics**: Add a new metric.
+- **PUT /api/metrics**: Update an existing metric.
+- **DELETE /api/metrics**: Delete a metric.
+
+### Users
+
+- **GET /api/users**: Retrieve all users.
+- **POST /api/users**: Add a new user.
+- **PUT /api/users**: Update an existing user.
+- **DELETE /api/users**: Delete a user.
+
+## User Roles
+
+Describe the different user roles within the application and their permissions.
+
+### Admin
+
+- Upload and manage photos.
+- Manage voting metrics.
+- View voting results.
+- Manage users.
+
+### Judge
+
+- Vote on photos based on metrics.
+- Modify their votes.
+- View results in real-time.
+
+## Contributing
+
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+### Steps to Contribute
+
+1. **Fork the Repository**  
+   Click the "Fork" button at the top right of the repository page to create your own fork.
+
+2. **Clone the Repository**  
+   ```bash
+   git clone https://github.com/your-username/photovotes.git
+   cd photovotes
+   ```
+
+3. **Create a Branch**  
+   Create a new branch for your feature or bugfix:
+   ```bash
+   git checkout -b feature/FeatureName
+   ```
+
+4. **Make Your Changes**  
+   Commit your changes with descriptive messages:
+   ```bash
+   git commit -m "Add some feature"
+   ```
+
+5. **Push to the Branch**  
+   ```bash
+   git push origin feature/FeatureName
+   ```
+
+6. **Open a Pull Request**  
+   Go to your forked repository and click "New Pull Request".
+
+### Guidelines
+
+- Follow the [Code of Conduct](https://en.wikipedia.org/wiki/Programming_ethics).
+- Ensure that your code follows the project's coding style.
+- Provide tests for your changes.
+- Update documentation if necessary.
+
+## Troubleshooting
+
+Provide solutions to common issues that users might face while setting up or running the application.
+
+### Common Issues
+
+#### 1. Database Connection Errors
+
+**Error: `Error: getaddrinfo ENOTFOUND localhost`**
+
+- **Solution:** Ensure that MariaDB is running and that the `DATABASE_URL` in your `.env.local` file is correct.
+
+#### 2. Missing Dependencies
+
+**Error: `Module not found: Can't resolve '...'`**
+
+- **Solution:** Run `npm install` to install all dependencies.
+
+#### 3. TypeORM Migration Failures
+
+**Error: `Error: Migration failed`**
+
+- **Solution:** Ensure that the database credentials are correct and that the database server is running. Check for any pending migrations and run `npm run typeorm migration:run`.
+
+### Additional Help
+
+If you encounter other issues, please open an issue on the [GitHub repository](https://github.com/m4yc3x/photovotes/issues).
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## Contact
+
+Your Name – [stellarweb@tuta.io](mailto:stellarweb@tuta.io)
+
+Project Link: [https://github.com/m4yc3x/photovotes](https://github.com/m4yc3x/photovotes)
+```
