@@ -10,9 +10,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const dataSource = await getDataSource();
     const photoRepository = dataSource.getRepository(Photo);
-    const voteRepository = dataSource.getRepository(Vote);
 
-    const userId = req.headers['user-id']; // Assume we're passing user ID in headers
+    const userId = parseInt(req.headers['user-id'] as string);
+
+    if (!userId) {
+        return res.status(400).json({ message: 'User ID is required' });
+    }
 
     try {
         const nextPhoto = await photoRepository
@@ -26,7 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     .getQuery();
                 return 'photo.id NOT IN ' + subQuery;
             })
-            .orderBy('RAND()')
+            .andWhere('photo.active = :active', { active: true })
+            .orderBy('photo.id', 'DESC')
             .getOne();
 
         if (nextPhoto) {

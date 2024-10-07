@@ -21,19 +21,26 @@ export default function JudgeDashboard() {
     const fetchNextPhoto = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await fetch('/api/photos/next');
+            const response = await fetch('/api/photos/next', {
+                headers: {
+                    'user-id': userId?.toString() || ''
+                }
+            });
             if (response.ok) {
                 const photo = await response.json();
                 setCurrentPhoto(photo);
-            } else {
+            } else if (response.status === 404) {
                 setCurrentPhoto(null);
+            } else {
+                throw new Error('Failed to fetch next photo');
             }
         } catch (error) {
             console.error('Error fetching next photo:', error);
+            setCurrentPhoto(null);
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [userId]);
 
     const fetchMetrics = useCallback(async () => {
         try {
