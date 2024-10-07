@@ -35,3 +35,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 00_AI_LEAD_DEVELOPER.md
+.env
+.env.local
