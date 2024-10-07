@@ -1,61 +1,65 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getDataSource } from '../../../lib/database';
-import { Photo } from '../../../models/Photo';
-import { Vote } from '../../../models/Vote';
-import { In } from 'typeorm';
+import { Vote, User, Photo } from '../../../models';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'GET') {
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const dataSource = await getDataSource();
-    const photoRepository = dataSource.getRepository(Photo);
-    const voteRepository = dataSource.getRepository(Vote);
+    const { userId, page = '1', limit = '12' } = req.query;
 
-    const userId = parseInt(req.headers['user-id'] as string);
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 5;
-
-    if (!userId) {
-        return res.status(400).json({ message: 'User ID is required' });
+    if (!userId || Array.isArray(userId)) {
+        return res.status(400).json({ message: 'Invalid user ID' });
     }
 
+    const pageNumber = parseInt(Array.isArray(page) ? page[0] : page);
+    const limitNumber = parseInt(Array.isArray(limit) ? limit[0] : limit);
+
     try {
-        const [photos, total] = await photoRepository.createQueryBuilder('photo')
-            .innerJoin('photo.votes', 'vote')
-            .where('vote.userId = :userId', { userId })
-            .orderBy('photo.id', 'DESC')
-            .skip((page - 1) * limit)
-            .take(limit)
-            .getManyAndCount();
+        const dataSource = await getDataSource();
+        const userRepository = dataSource.getRepository(User);
+        const photoRepository = dataSource.getRepository(Photo);
+        const voteRepository = dataSource.getRepository(Vote);
 
-        const photoIds = photos.map(p => p.id);
-
-        const votes = await voteRepository.find({
-            where: { 
-                user: { id: userId },
-                photo: { id: In(photoIds) }
-            },
-            relations: ['metric', 'photo']
+        const user = await userRepository.findOne({
+            where: { id: parseInt(userId) }
         });
 
-        const formattedVotes = votes.reduce((acc, vote) => {
-            if (vote.photo && vote.metric) {
-                acc[`${vote.photo.id}-${vote.metric.id}`] = vote.value;
-            }
-            return acc;
-        }, {} as { [key: string]: number });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const [photos, total] = await photoRepository.findAndCount({
+            skip: (pageNumber - 1) * limitNumber,
+            take: limitNumber,
+            order: { id: 'ASC' }
+        });
+
+        const votes = await voteRepository.find({
+            where: { user: { id: user.id } },
+            relations: ['photo', 'metric']
+        });
+
+        const formattedVotes = await Promise.all(votes.map(async (vote) => {
+            const photo = await vote.photo;
+            const metric = await vote.metric;
+            return { 
+                [`${photo.id}-${metric.id}`]: vote.value 
+            };
+        }));
+
+        const mergedVotes = Object.assign({}, ...formattedVotes);
 
         res.status(200).json({
             photos,
-            votes: formattedVotes,
+            votes: mergedVotes,
             total,
-            page,
-            limit
+            page: pageNumber,
+            limit: limitNumber
         });
     } catch (error) {
         console.error('Error fetching user votes:', error);
-        res.status(500).json({ message: 'Internal server error', error: error instanceof Error ? error.message : String(error) });
+        res.status(500).json({ message: 'Internal server error' });
     }
 }

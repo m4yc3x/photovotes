@@ -4,10 +4,19 @@ const nextConfig = {
     images: {
         domains: ['cdn.discordapp.com'],
     },
-    webpack: (config) => {
-        config.resolve.fallback = { fs: false, net: false, tls: false };
+    webpack: (config, { isServer }) => {
+        if (!isServer) {
+            config.resolve.fallback = { fs: false, net: false, tls: false };
+        }
+        config.experiments = {
+            ...config.experiments,
+            topLevelAwait: true,
+        };
         return config;
     },
+    experimental: {
+        esmExternals: true
+    }
 };
 
 export default nextConfig;

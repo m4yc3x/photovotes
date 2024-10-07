@@ -18,16 +18,12 @@ export default function ModifyVotes() {
     const [saving, setSaving] = useState<number | null>(null);
     const router = useRouter();
 
-    const photosPerPage = 12; // Increased from 5 to 12 for a grid layout
+    const photosPerPage = 12;
 
     const fetchPhotosAndVotes = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/votes/user?page=${currentPage}&limit=${photosPerPage}`, {
-                headers: {
-                    'User-ID': userId?.toString() || ''
-                }
-            });
+            const response = await fetch(`/api/votes/user?userId=${userId}&page=${currentPage}&limit=${photosPerPage}`);
             if (response.ok) {
                 const data = await response.json();
                 setPhotos(data.photos);

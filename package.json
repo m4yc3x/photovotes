@@ -13,7 +13,8 @@
     "migration:run": "typeorm-ts-node-esm migration:run -d src/migration.config.ts",
     "migration:revert": "typeorm-ts-node-esm migration:revert -d src/migration.config.ts",
     "migration:refresh": "typeorm-ts-node-esm migration:revert -d src/migration.config.ts --all && typeorm-ts-node-esm migration:run -d src/migration.config.ts",
-    "migration:create": "typeorm-ts-node-esm migration:create src/migrations/InitialMigration"
+    "migration:create": "typeorm-ts-node-esm migration:create src/migrations/InitialMigration",
+    "postinstall": "typeorm-model-shim"
   },
   "dependencies": {
     "assert": "^2.1.0",
@@ -31,7 +32,8 @@
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "typeorm": "^0.3.20",
-    "url": "^0.11.4"
+    "url": "^0.11.4",
+    "typeorm-model-shim": "^0.0.2"
   },
   "devDependencies": {
     "@types/node": "^20.16.10",

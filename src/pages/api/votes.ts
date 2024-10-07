@@ -1,9 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getDataSource } from '../../lib/database';
-import { Vote } from '../../models/Vote';
-import { User } from '../../models/User';
-import { Photo } from '../../models/Photo';
-import { Metric } from '../../models/Metric';
+import { Vote, User, Photo, Metric } from '../../models';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const dataSource = await getDataSource();
@@ -15,10 +12,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     switch (req.method) {
         case 'GET':
             try {
-                const allVotes = await voteRepository.find({
-                    relations: ['user', 'photo', 'metric']
-                });
-                res.status(200).json(allVotes);
+                const allVotes = await voteRepository.find();
+                const populatedVotes = await Promise.all(allVotes.map(async (vote) => ({
+                    ...vote,
+                    user: await vote.user,
+                    photo: await vote.photo,
+                    metric: await vote.metric
+                })));
+                res.status(200).json(populatedVotes);
             } catch (error) {
                 console.error('Error fetching votes:', error);
                 res.status(500).json({ message: 'Internal server error' });
@@ -46,12 +47,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     if (!metric) {
                         throw new Error(`Metric with id ${vote.metricId} not found`);
                     }
-                    return voteRepository.create({
-                        user,
-                        photo,
-                        metric,
+                    const newVote = voteRepository.create({
                         value: vote.value
                     });
+                    newVote.user = Promise.resolve(user);
+                    newVote.photo = Promise.resolve(photo);
+                    newVote.metric = Promise.resolve(metric);
+                    return newVote;
                 }));
 
                 await voteRepository.save(newVotes);
