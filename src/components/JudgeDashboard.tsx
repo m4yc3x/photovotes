@@ -90,7 +90,7 @@ export default function JudgeDashboard() {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
-                    'User-ID': userId?.toString() || '' // Add this line
+                    'User-ID': userId?.toString() || ''
                 },
                 body: JSON.stringify({
                     photoId: currentPhoto?.id,

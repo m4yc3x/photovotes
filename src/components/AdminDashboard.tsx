@@ -12,6 +12,7 @@ export default function AdminDashboard() {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -25,12 +26,17 @@ export default function AdminDashboard() {
 
     const fetchPhotos = useCallback(async () => {
         setLoading(true);
+        setError(null);
         try {
             const response = await fetch('/api/photos');
+            if (!response.ok) {
+                throw new Error('Failed to fetch photos');
+            }
             const data = await response.json();
             setPhotos(data);
         } catch (error) {
             console.error('Error fetching photos:', error);
+            setError('Failed to fetch photos. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -42,20 +48,36 @@ export default function AdminDashboard() {
 
     const handleAddPhoto = async (e: React.FormEvent) => {
         e.preventDefault();
-        const response = await fetch('/api/photos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newPhoto),
-        });
-        if (response.ok) {
+        setError(null);
+        try {
+            const response = await fetch('/api/photos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newPhoto),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to add photo');
+            }
             setNewPhoto({ username: '', imageUrl: '' });
             fetchPhotos();
+        } catch (error) {
+            console.error('Error adding photo:', error);
+            setError('Failed to add photo. Please try again.');
         }
     };
 
     const handleDeletePhoto = async (id: number) => {
-        const response = await fetch(`/api/photos?id=${id}`, { method: 'DELETE' });
-        if (response.ok) fetchPhotos();
+        setError(null);
+        try {
+            const response = await fetch(`/api/photos?id=${id}`, { method: 'DELETE' });
+            if (!response.ok) {
+                throw new Error('Failed to delete photo');
+            }
+            fetchPhotos();
+        } catch (error) {
+            console.error('Error deleting photo:', error);
+            setError('Failed to delete photo. Please try again.');
+        }
     };
 
     const filteredPhotos = useMemo(() => {
@@ -139,6 +161,15 @@ export default function AdminDashboard() {
             </div>
 
             <div className="container mx-auto p-4">
+                {error && (
+                    <div className="alert alert-error shadow-lg mb-4">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>{error}</span>
+                        </div>
+                    </div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-[3fr,1fr] gap-6">
                     <div className="card bg-base-100 shadow-xl">
                         <div className="card-body">

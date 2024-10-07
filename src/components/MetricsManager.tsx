@@ -13,15 +13,21 @@ export default function MetricsManager() {
     const [newMetric, setNewMetric] = useState({ name: '', scale: 10 });
     const [editingMetric, setEditingMetric] = useState<Metric | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchMetrics = useCallback(async () => {
         setLoading(true);
+        setError(null);
         try {
             const response = await fetch('/api/metrics');
+            if (!response.ok) {
+                throw new Error('Failed to fetch metrics');
+            }
             const data = await response.json();
             setMetrics(data);
         } catch (error) {
             console.error('Error fetching metrics:', error);
+            setError('Failed to fetch metrics. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -33,14 +39,21 @@ export default function MetricsManager() {
 
     const handleAddMetric = async (e: React.FormEvent) => {
         e.preventDefault();
-        const response = await fetch('/api/metrics', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newMetric),
-        });
-        if (response.ok) {
+        setError(null);
+        try {
+            const response = await fetch('/api/metrics', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newMetric),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to add metric');
+            }
             setNewMetric({ name: '', scale: 10 });
             fetchMetrics();
+        } catch (error) {
+            console.error('Error adding metric:', error);
+            setError('Failed to add metric. Please try again.');
         }
     };
 
@@ -57,8 +70,17 @@ export default function MetricsManager() {
     };
 
     const handleDeleteMetric = async (id: number) => {
-        const response = await fetch(`/api/metrics?id=${id}`, { method: 'DELETE' });
-        if (response.ok) fetchMetrics();
+        setError(null);
+        try {
+            const response = await fetch(`/api/metrics?id=${id}`, { method: 'DELETE' });
+            if (!response.ok) {
+                throw new Error('Failed to delete metric');
+            }
+            fetchMetrics();
+        } catch (error) {
+            console.error('Error deleting metric:', error);
+            setError('Failed to delete metric. Please try again.');
+        }
     };
 
     const MetricSkeleton = () => (
@@ -111,6 +133,15 @@ export default function MetricsManager() {
                         </form>
                     </div>
                 </div>
+
+                {error && (
+                    <div className="alert alert-error shadow-lg mb-4">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>{error}</span>
+                        </div>
+                    </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {loading
