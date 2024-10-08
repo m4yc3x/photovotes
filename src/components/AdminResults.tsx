@@ -65,24 +65,30 @@ export default function AdminResults() {
 
         fetchData();
     }, []);
+const photoResults = useMemo(() => {
+    // Filter out invalid votes
+    const validVotes = votes.filter(vote =>
+        vote.photo && vote.metric &&
+        photos.some(photo => photo.id === vote.photo.id) &&
+        metrics.some(metric => metric.id === vote.metric.id)
+    );
 
-    const photoResults = useMemo(() => {
-        return photos.map(photo => {
-            const photoVotes = votes.filter(vote => vote.photo.id === photo.id);
+    return photos.map(photo => {
+        const photoVotes = validVotes.filter(vote => vote.photo.id === photo.id);
 
-            const metricAverages = metrics.map(metric => {
-                const metricVotes = photoVotes.filter(vote => vote.metric.id === metric.id);
-                const totalValue = metricVotes.reduce((sum, vote) => sum + vote.value, 0);
-                const averageValue = metricVotes.length > 0 ? totalValue / metricVotes.length : 0;
-                return { metricId: metric.id, average: averageValue };
-            });
+        const metricAverages = metrics.map(metric => {
+            const metricVotes = photoVotes.filter(vote => vote.metric.id === metric.id);
+            const totalValue = metricVotes.reduce((sum, vote) => sum + vote.value, 0);
+            const averageValue = metricVotes.length > 0 ? totalValue / metricVotes.length : 0;
+            return { metricId: metric.id, average: averageValue };
+        });
 
-            const totalScore = metricAverages.reduce((sum, metric) => sum + metric.average, 0);
-            const overallAverage = totalScore / metrics.length;
+        const totalScore = metricAverages.reduce((sum, metric) => sum + metric.average, 0);
+        const overallAverage = totalScore / metrics.length;
 
-            return { ...photo, metricAverages, totalScore, overallAverage };
-        }).sort((a, b) => b.totalScore - a.totalScore);
-    }, [photos, metrics, votes]);
+        return { ...photo, metricAverages, totalScore, overallAverage };
+    }).sort((a, b) => b.totalScore - a.totalScore);
+}, [photos, metrics, votes]);
 
     if (loading) {
         return (
