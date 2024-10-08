@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getDataSource } from '../../../lib/database';
 import { Vote, User, Photo } from '../../../models';
+import { Repository } from 'typeorm';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'GET') {
@@ -18,9 +19,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const dataSource = await getDataSource();
-        const userRepository = dataSource.getRepository(User);
-        const photoRepository = dataSource.getRepository(Photo);
-        const voteRepository = dataSource.getRepository(Vote);
+        const userRepository: Repository<User> = dataSource.getRepository(User);
+        const photoRepository: Repository<Photo> = dataSource.getRepository(Photo);
+        const voteRepository: Repository<Vote> = dataSource.getRepository(Vote);
 
         const user = await userRepository.findOne({
             where: { id: parseInt(userId) }
@@ -41,15 +42,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             relations: ['photo', 'metric']
         });
 
-        const formattedVotes = await Promise.all(votes.map(async (vote) => {
-            const photo = await vote.photo;
-            const metric = await vote.metric;
-            return { 
-                [`${photo.id}-${metric.id}`]: vote.value 
-            };
-        }));
+        const formattedVotes = await Promise.all(
+            votes.map(async (vote) => {
+                const photo = await vote.photo;
+                const metric = await vote.metric;
+                if (photo && metric) {
+                    return { [`${photo.id}-${metric.id}`]: vote.value };
+                }
+                return null;
+            })
+        );
 
-        const mergedVotes = Object.assign({}, ...formattedVotes);
+        const mergedVotes = Object.assign({}, ...formattedVotes.filter(Boolean));
 
         res.status(200).json({
             photos,
