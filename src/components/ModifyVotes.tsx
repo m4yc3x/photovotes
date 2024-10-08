@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { LogOut, Camera, User, ChevronLeft, ChevronRight, Save, Loader } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Photo } from '../models/Photo';
 import { Metric } from '../models/Metric';
 
@@ -163,13 +162,8 @@ export default function ModifyVotes() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {photos.map(photo => (
                                 <div key={photo.id} className="card bg-base-100 shadow-xl">
-                                    <figure className="relative pt-[100%]">
-                                        <Image
-                                            src={photo.imageUrl}
-                                            alt={`Photo by ${photo.username}`}
-                                            layout="fill"
-                                            objectFit="cover"
-                                        />
+                                    <figure className="relative">
+                                    <img src={photo.imageUrl} alt={photo.username} className="w-full h-48 object-cover" />
                                     </figure>
                                     <div className="card-body p-4">
                                         <h2 className="card-title text-sm">Photo by {photo.username}</h2>
