@@ -55,7 +55,7 @@ export default function ModifyVotes() {
         const userAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
         const userRole = localStorage.getItem('userRole');
         const storedUserId = localStorage.getItem('userId');
-        
+
         if (!userAuthenticated || userRole !== 'judge') {
             router.push('/');
         }
@@ -96,7 +96,7 @@ export default function ModifyVotes() {
 
             const response = await fetch('/api/votes', {
                 method: 'PUT',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'User-ID': userId?.toString() || ''
                 },
@@ -153,7 +153,7 @@ export default function ModifyVotes() {
 
             <main className="container mx-auto p-4 py-8">
                 <h1 className="text-3xl font-bold mb-6">Modify Your Votes</h1>
-                
+
                 {loading ? (
                     <div className="flex justify-center items-center h-64">
                         <Loader className="animate-spin h-8 w-8 text-primary" />
@@ -194,7 +194,7 @@ export default function ModifyVotes() {
                                             ))}
                                         </div>
                                         <div className="card-actions justify-end mt-2">
-                                            <button 
+                                            <button
                                                 className={`btn btn-primary btn-xs ${saving === photo.id ? 'loading' : ''}`}
                                                 onClick={() => handleSaveVotes(photo.id)}
                                                 disabled={saving !== null}
@@ -209,7 +209,7 @@ export default function ModifyVotes() {
                         </div>
 
                         <div className="flex justify-center items-center space-x-4 mt-6">
-                            <button 
+                            <button
                                 className="btn btn-outline btn-sm"
                                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                 disabled={currentPage === 1}
@@ -218,7 +218,7 @@ export default function ModifyVotes() {
                                 Previous
                             </button>
                             <span className="text-sm">Page {currentPage} of {totalPages}</span>
-                            <button 
+                            <button
                                 className="btn btn-outline btn-sm"
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                                 disabled={currentPage === totalPages}
