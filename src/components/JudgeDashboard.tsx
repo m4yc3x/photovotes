@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { LogOut, Camera, User, Maximize2, Loader } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Photo } from '../models/Photo';
 import { Metric } from '../models/Metric';
 
@@ -59,7 +58,7 @@ export default function JudgeDashboard() {
         const userAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
         const userRole = localStorage.getItem('userRole');
         const storedUserId = localStorage.getItem('userId');
-        
+
         if (!userAuthenticated || userRole !== 'judge') {
             router.push('/');
         }
@@ -88,7 +87,7 @@ export default function JudgeDashboard() {
         try {
             const response = await fetch('/api/votes', {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'User-ID': userId?.toString() || ''
                 },
@@ -148,30 +147,23 @@ export default function JudgeDashboard() {
 
             <main className="container mx-auto p-4 py-8">
                 <h1 className="text-3xl font-bold mb-6">Welcome, {username}!</h1>
-                
+
                 {loading ? (
                     <div className="flex justify-center items-center h-64">
                         <Loader className="animate-spin h-8 w-8 text-primary" />
                     </div>
                 ) : currentPhoto ? (
                     <div className="card bg-base-100 shadow-xl">
-                        <figure className="relative pt-[56.25%]">
+                        <figure className="relative">
                             {imageError ? (
                                 <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500">
                                     Image failed to load
                                 </div>
                             ) : (
-                                <Image
-                                    src={currentPhoto.imageUrl.startsWith('http') ? currentPhoto.imageUrl : `/${currentPhoto.imageUrl.replace(/^\//, '')}`}
-                                    alt={`Photo by ${currentPhoto.username}`}
-                                    layout="fill"
-                                    objectFit="contain"
-                                    className="cursor-pointer"
-                                    onClick={() => setExpandedImage(true)}
-                                    onError={() => setImageError(true)}
-                                />
+                                <img src={currentPhoto.imageUrl} alt={currentPhoto.username} className="w-full object-contain cursor-pointer" onClick={() => setExpandedImage(true)} onError={() => setImageError(true)}/>
+
                             )}
-                            <button 
+                            <button
                                 className="absolute top-2 right-2 btn btn-circle btn-sm"
                                 onClick={() => setExpandedImage(true)}
                             >
@@ -204,7 +196,7 @@ export default function JudgeDashboard() {
                                 ))}
                             </div>
                             <div className="card-actions justify-end mt-4">
-                                <button 
+                                <button
                                     className={`btn btn-primary ${submitting ? 'loading' : ''}`}
                                     onClick={handleSubmitVotes}
                                     disabled={submitting}
@@ -224,19 +216,14 @@ export default function JudgeDashboard() {
             </main>
 
             {expandedImage && currentPhoto && (
-                <div 
-                    className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 cursor-pointer" 
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 cursor-pointer"
                     onClick={() => setExpandedImage(false)}
                 >
                     <div className="relative w-full h-full p-4">
-                        <Image
-                            src={currentPhoto.imageUrl}
-                            alt={`Photo by ${currentPhoto.username}`}
-                            layout="fill"
-                            objectFit="contain"
-                            quality={100}
-                        />
-                        <button 
+                        <img src={currentPhoto.imageUrl} alt={currentPhoto.username} className="w-full h-full object-contain" />
+
+                        <button
                             className="absolute top-4 right-4 btn btn-circle btn-sm"
                             onClick={(e) => {
                                 e.stopPropagation();
